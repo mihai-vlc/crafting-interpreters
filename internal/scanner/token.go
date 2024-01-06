@@ -1,5 +1,7 @@
 package scanner
 
+import "fmt"
+
 type TokenKind int32
 
 const (
@@ -40,5 +42,5 @@ func NewToken(kind TokenKind, line int) *Token {
 }
 
 func (t *Token) String() string {
-	return kindToString(t.kind) + "#" + string(t.line)
+	return kindToString(t.kind) + "#" + fmt.Sprint(t.line)
 }
