@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"log"
+	"lox/internal/scanner"
 	"os"
 )
 
@@ -34,6 +35,7 @@ func runPrompt() {
 		if err != nil {
 			log.Fatalln("Failed to read the line", err)
 		}
-		fmt.Print(line)
+		s := scanner.NewScanner(line)
+		fmt.Println(s.ScanTokens())
 	}
 }

@@ -10,8 +10,14 @@ const (
 	TokenString
 	TokenNumber
 
+	// Symbols
+	TokenEqual
+
 	// Keywords
 	TokenVar
+
+	// Other
+	TokenEOF
 )
 
 func kindToString(kind TokenKind) string {
@@ -22,8 +28,12 @@ func kindToString(kind TokenKind) string {
 		return "string"
 	case TokenNumber:
 		return "number"
+	case TokenEqual:
+		return "="
 	case TokenVar:
 		return "var"
+	case TokenEOF:
+		return "<EOF>"
 	default:
 		return "N/A"
 	}
