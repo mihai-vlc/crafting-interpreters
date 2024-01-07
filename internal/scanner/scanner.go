@@ -2,7 +2,6 @@ package scanner
 
 import (
 	"fmt"
-	"log"
 	"unicode"
 )
 
@@ -28,21 +27,23 @@ func NewScanner(source string) *Scanner {
 	return &s
 }
 
-func (s *Scanner) ScanTokens() []*Token {
+func (s *Scanner) ScanTokens() ([]*Token, error) {
 	for !s.isAtEnd() {
-		s.scanToken()
+		if err := s.scanToken(); err != nil {
+			return nil, err
+		}
 	}
 
 	s.addToken(TokenEOF, "EOF")
 
-	return s.tokens
+	return s.tokens, nil
 }
 
 func (s *Scanner) isAtEnd() bool {
 	return s.currentPosition+1 >= len(s.source)
 }
 
-func (s *Scanner) scanToken() {
+func (s *Scanner) scanToken() error {
 	s.start = s.currentPosition
 
 	var c = s.advance()
@@ -58,8 +59,10 @@ func (s *Scanner) scanToken() {
 	case s.isAlpha(c):
 		s.identifier()
 	default:
-		s.fail("Unexpected token %s", string(c))
+		return s.error("Unexpected token %s", string(c))
 	}
+
+	return nil
 }
 
 func (s *Scanner) addToken(kind TokenKind, value string) {
@@ -116,7 +119,7 @@ func (s *Scanner) isAlpha(c rune) bool {
 	return unicode.IsLetter(c) || c == '_'
 }
 
-func (s *Scanner) fail(msg string, args ...any) {
+func (s *Scanner) error(msg string, args ...any) error {
 	msg += fmt.Sprintf(", at position %d:%d", s.line, s.column)
-	log.Fatalf(msg, args...)
+	return fmt.Errorf(msg, args...)
 }

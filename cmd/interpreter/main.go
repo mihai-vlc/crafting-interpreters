@@ -36,6 +36,12 @@ func runPrompt() {
 			log.Fatalln("Failed to read the line", err)
 		}
 		s := scanner.NewScanner(line)
-		fmt.Println(s.ScanTokens())
+		tokens, err := s.ScanTokens()
+		if err != nil {
+			fmt.Println(err)
+			continue
+		}
+
+		fmt.Println(tokens)
 	}
 }
