@@ -20,7 +20,7 @@ func NewScanner(source string) *Scanner {
 		source:          []rune(source),
 		tokens:          []*Token{},
 		line:            1,
-		column:          1,
+		column:          0,
 		start:           0,
 		currentPosition: 0,
 	}
@@ -33,7 +33,7 @@ func (s *Scanner) ScanTokens() []*Token {
 		s.scanToken()
 	}
 
-	s.addToken(NewToken(TokenEOF, 1))
+	s.addToken(TokenEOF, "EOF")
 
 	return s.tokens
 }
@@ -49,21 +49,22 @@ func (s *Scanner) scanToken() {
 
 	switch {
 	case c == '=':
-		s.addToken(NewToken(TokenEqual, 1))
+		s.addToken(TokenEqual, "=")
 	case c == ' ' || c == '\t' || c == '\r':
 		// skip
 	case c == '\n':
 		s.line++
 		s.column = 1
-	case unicode.IsLetter(c):
+	case s.isAlpha(c):
 		s.identifier()
 	default:
 		s.fail("Unexpected token %s", string(c))
 	}
 }
 
-func (s *Scanner) addToken(t *Token) {
-	s.tokens = append(s.tokens, t)
+func (s *Scanner) addToken(kind TokenKind, value string) {
+	token := NewToken(kind, value, s.getPosition())
+	s.tokens = append(s.tokens, token)
 }
 
 func (s *Scanner) advance() rune {
@@ -86,20 +87,25 @@ func (s *Scanner) peekNext() (rune, error) {
 	return s.source[nextPos], nil
 }
 
+func (s *Scanner) getPosition() *Position {
+	size := s.currentPosition - s.start - 1
+	return NewPosition(s.line, s.column-size)
+}
+
 func (s *Scanner) identifier() {
 
 	for s.isAlphaNumeric(s.peek()) {
 		s.advance()
 	}
 
-	word := string(s.source[s.start : s.currentPosition+1])
+	word := string(s.source[s.start:s.currentPosition])
 
-	fmt.Println("word =", word)
 	if word == "var" {
-		s.addToken(NewToken(TokenVar, s.line))
+		s.addToken(TokenVar, word)
+		return
 	}
 
-	s.addToken(NewToken(TokenIdentifier, 1))
+	s.addToken(TokenIdentifier, word)
 }
 
 func (s *Scanner) isAlphaNumeric(c rune) bool {

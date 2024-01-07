@@ -33,24 +33,32 @@ func kindToString(kind TokenKind) string {
 	case TokenVar:
 		return "var"
 	case TokenEOF:
-		return "<EOF>"
+		return "[EOF]"
 	default:
 		return "N/A"
 	}
 }
 
 type Token struct {
-	kind TokenKind
-	line int
+	kind     TokenKind
+	value    string
+	position *Position
 }
 
-func NewToken(kind TokenKind, line int) *Token {
+func NewToken(kind TokenKind, value string, position *Position) *Token {
 	return &Token{
-		kind: kind,
-		line: line,
+		kind:     kind,
+		value:    value,
+		position: position,
 	}
 }
 
 func (t *Token) String() string {
-	return kindToString(t.kind) + "#" + fmt.Sprint(t.line)
+	return fmt.Sprintf(
+		"<%s `%s` %d:%d>",
+		kindToString(t.kind),
+		t.value,
+		t.position.line,
+		t.position.column,
+	)
 }

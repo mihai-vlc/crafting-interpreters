@@ -28,7 +28,7 @@ func runPrompt() {
 	reader := bufio.NewReader(os.Stdin)
 
 	for {
-		fmt.Print("> ")
+		fmt.Print("$> ")
 		var line string
 		line, err := reader.ReadString('\n')
 
