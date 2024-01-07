@@ -2,42 +2,23 @@ package scanner
 
 import "fmt"
 
-type TokenKind int32
+type TokenKind string
 
 const (
 	// Literal
-	TokenIdentifier TokenKind = iota
-	TokenString
-	TokenNumber
+	TokenIdentifier = "identifier"
+	TokenString     = "string"
+	TokenNumber     = "number"
 
 	// Symbols
-	TokenEqual
+	TokenEqual = "equal"
 
 	// Keywords
-	TokenVar
+	TokenVar = "var"
 
 	// Other
-	TokenEOF
+	TokenEOF = "[EOF]"
 )
-
-func kindToString(kind TokenKind) string {
-	switch kind {
-	case TokenIdentifier:
-		return "identifier"
-	case TokenString:
-		return "string"
-	case TokenNumber:
-		return "number"
-	case TokenEqual:
-		return "="
-	case TokenVar:
-		return "var"
-	case TokenEOF:
-		return "[EOF]"
-	default:
-		return "N/A"
-	}
-}
 
 type Token struct {
 	kind     TokenKind
@@ -56,7 +37,7 @@ func NewToken(kind TokenKind, value string, position *Position) *Token {
 func (t *Token) String() string {
 	return fmt.Sprintf(
 		"<%s `%s` %d:%d>",
-		kindToString(t.kind),
+		t.kind,
 		t.value,
 		t.position.line,
 		t.position.column,
