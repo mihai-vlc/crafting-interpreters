@@ -58,6 +58,8 @@ func (s *Scanner) scanToken() error {
 		s.column = 1
 	case s.isAlpha(c):
 		s.identifier()
+	case unicode.IsDigit(c):
+		s.number()
 	default:
 		return s.error("Unexpected token %s", string(c))
 	}
@@ -109,6 +111,24 @@ func (s *Scanner) identifier() {
 	}
 
 	s.addToken(TokenIdentifier, word)
+}
+
+func (s *Scanner) number() {
+
+	for unicode.IsNumber(s.peek()) {
+		s.advance()
+	}
+
+	if s.peek() == '.' {
+		s.advance() // consume the .
+	}
+
+	for unicode.IsNumber(s.peek()) {
+		s.advance()
+	}
+
+	value := string(s.source[s.start:s.currentPosition])
+	s.addToken(TokenNumber, value)
 }
 
 func (s *Scanner) isAlphaNumeric(c rune) bool {
