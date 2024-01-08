@@ -11,7 +11,19 @@ const (
 	TokenNumber     = "number"
 
 	// Symbols
-	TokenEqual = "equal"
+	TokenEqual       = "equal"
+	TokenPlus        = "plus"
+	TokenMinus       = "minus"
+	TokenStar        = "star"
+	TokenDivide      = "divide"
+	TokenModulo      = "modulo"
+	TokenDot         = "dot"
+	TokenSemicolon   = "semicolon"
+	TokenComma       = "comma"
+	TokenLess        = "less"
+	TokenLessEqual   = "less_equal"
+	TokenGrater      = "grater"
+	TokenGraterEqual = "grater_equal"
 
 	// Keywords
 	TokenVar = "var"

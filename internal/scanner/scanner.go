@@ -51,6 +51,38 @@ func (s *Scanner) scanToken() error {
 	switch {
 	case c == '=':
 		s.addToken(TokenEqual, "=")
+	case c == '+':
+		s.addToken(TokenPlus, "+")
+	case c == '-':
+		s.addToken(TokenPlus, "-")
+	case c == '*':
+		s.addToken(TokenStar, "*")
+	case c == '/':
+		if s.match('/') {
+			s.commentLine()
+		} else {
+			s.addToken(TokenDivide, "/")
+		}
+	case c == '%':
+		s.addToken(TokenModulo, "%")
+	case c == '.':
+		s.addToken(TokenDot, ".")
+	case c == ';':
+		s.addToken(TokenSemicolon, ";")
+	case c == ',':
+		s.addToken(TokenComma, ",")
+	case c == '<':
+		if s.match('=') {
+			s.addToken(TokenLessEqual, "<=")
+		} else {
+			s.addToken(TokenLess, "<")
+		}
+	case c == '>':
+		if s.match('=') {
+			s.addToken(TokenGraterEqual, ">=")
+		} else {
+			s.addToken(TokenGrater, ">")
+		}
 	case c == ' ' || c == '\t' || c == '\r':
 		// skip
 	case c == '\n':
@@ -77,6 +109,18 @@ func (s *Scanner) advance() rune {
 	s.currentPosition++
 	s.column++
 	return c
+}
+func (s *Scanner) match(c rune) bool {
+	if s.isAtEnd() {
+		return false
+	}
+
+	if s.peek() != c {
+		return false
+	}
+
+	s.advance() // consume character
+	return true
 }
 
 func (s *Scanner) peek() rune {
@@ -129,6 +173,12 @@ func (s *Scanner) number() {
 
 	value := string(s.source[s.start:s.currentPosition])
 	s.addToken(TokenNumber, value)
+}
+
+func (s *Scanner) commentLine() {
+	for s.peek() != '\n' && !s.isAtEnd() {
+		s.advance()
+	}
 }
 
 func (s *Scanner) isAlphaNumeric(c rune) bool {
