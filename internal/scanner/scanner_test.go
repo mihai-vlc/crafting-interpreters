@@ -14,10 +14,29 @@ func TestScanner_ScanTokens(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "handles an empty program",
+			name: "handles an empty program no characters",
 			s:    scanner.NewScanner(""),
 			want: []*scanner.Token{
 				scanner.NewToken(scanner.TokenEOF, "EOF", scanner.NewPosition(1, 1)),
+			},
+			wantErr: false,
+		},
+		{
+			name: "handles an empty program with spaces",
+			s:    scanner.NewScanner("  \t \r\n"),
+			want: []*scanner.Token{
+				scanner.NewToken(scanner.TokenEOF, "EOF", scanner.NewPosition(2, 1)),
+			},
+			wantErr: false,
+		},
+		{
+			name: "standard identifiers",
+			s:    scanner.NewScanner("a b c"),
+			want: []*scanner.Token{
+				scanner.NewToken(scanner.TokenIdentifier, "a", scanner.NewPosition(1, 1)),
+				scanner.NewToken(scanner.TokenIdentifier, "b", scanner.NewPosition(1, 3)),
+				scanner.NewToken(scanner.TokenIdentifier, "c", scanner.NewPosition(1, 5)),
+				scanner.NewToken(scanner.TokenEOF, "EOF", scanner.NewPosition(1, 5)),
 			},
 			wantErr: false,
 		},

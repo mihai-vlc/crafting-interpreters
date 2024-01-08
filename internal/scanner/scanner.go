@@ -40,7 +40,7 @@ func (s *Scanner) ScanTokens() ([]*Token, error) {
 }
 
 func (s *Scanner) isAtEnd() bool {
-	return s.currentPosition+1 >= len(s.source)
+	return s.currentPosition >= len(s.source)
 }
 
 func (s *Scanner) scanToken() error {
@@ -143,7 +143,7 @@ func (s *Scanner) getPosition() *Position {
 
 func (s *Scanner) identifier() {
 
-	for s.isAlphaNumeric(s.peek()) {
+	for !s.isAtEnd() && s.isAlphaNumeric(s.peek()) {
 		s.advance()
 	}
 
