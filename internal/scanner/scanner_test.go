@@ -22,10 +22,10 @@ func TestScanner_ScanTokens(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "handles an empty program with spaces",
+			name: "handles an empty program with spaces 2",
 			s:    scanner.NewScanner("  \t \r\n"),
 			want: []*scanner.Token{
-				scanner.NewToken(scanner.TokenEOF, "EOF", scanner.NewPosition(2, 1)),
+				scanner.NewToken(scanner.TokenEOF, "EOF", scanner.NewPosition(2, 2)),
 			},
 			wantErr: false,
 		},
@@ -36,7 +36,19 @@ func TestScanner_ScanTokens(t *testing.T) {
 				scanner.NewToken(scanner.TokenIdentifier, "a", scanner.NewPosition(1, 1)),
 				scanner.NewToken(scanner.TokenIdentifier, "b", scanner.NewPosition(1, 3)),
 				scanner.NewToken(scanner.TokenIdentifier, "c", scanner.NewPosition(1, 5)),
-				scanner.NewToken(scanner.TokenEOF, "EOF", scanner.NewPosition(1, 5)),
+				scanner.NewToken(scanner.TokenEOF, "EOF", scanner.NewPosition(1, 6)),
+			},
+			wantErr: false,
+		},
+		{
+			name: "standard identifiers",
+			s:    scanner.NewScanner("var year = 2024"),
+			want: []*scanner.Token{
+				scanner.NewToken(scanner.TokenVar, "var", scanner.NewPosition(1, 1)),
+				scanner.NewToken(scanner.TokenIdentifier, "year", scanner.NewPosition(1, 5)),
+				scanner.NewToken(scanner.TokenEqual, "=", scanner.NewPosition(1, 10)),
+				scanner.NewToken(scanner.TokenNumber, "2024", scanner.NewPosition(1, 12)),
+				scanner.NewToken(scanner.TokenEOF, "EOF", scanner.NewPosition(1, 16)),
 			},
 			wantErr: false,
 		},

@@ -34,6 +34,7 @@ func (s *Scanner) ScanTokens() ([]*Token, error) {
 		}
 	}
 
+	s.start = s.currentPosition
 	s.addToken(TokenEOF, "EOF")
 
 	return s.tokens, nil
@@ -159,15 +160,15 @@ func (s *Scanner) identifier() {
 
 func (s *Scanner) number() {
 
-	for unicode.IsNumber(s.peek()) {
+	for !s.isAtEnd() && unicode.IsNumber(s.peek()) {
 		s.advance()
 	}
 
-	if s.peek() == '.' {
+	if !s.isAtEnd() && s.peek() == '.' {
 		s.advance() // consume the .
 	}
 
-	for unicode.IsNumber(s.peek()) {
+	for !s.isAtEnd() && unicode.IsNumber(s.peek()) {
 		s.advance()
 	}
 
@@ -176,7 +177,7 @@ func (s *Scanner) number() {
 }
 
 func (s *Scanner) commentLine() {
-	for s.peek() != '\n' && !s.isAtEnd() {
+	for !s.isAtEnd() && s.peek() != '\n' {
 		s.advance()
 	}
 }
